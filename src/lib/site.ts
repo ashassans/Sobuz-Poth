@@ -87,7 +87,7 @@ export const typeLabels: Record<Pkg["types"][number], L> = {
 const bnDigits = "০১২৩৪৫৬৭৮৯";
 export const num = (n: number, lang: Lang) => {
   const s = n.toLocaleString("en-IN");
-  return lang === "bn" ? s.replace(/\d/g, (d) => bnDigits[+d]) : s;
+  return lang === "bn" ? s.replace(/\d/g, (d) => bnDigits.charAt(+d)) : s;
 };
 
 export function waLink(text: string) {

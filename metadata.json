@@ -1,0 +1,5 @@
+{
+  "name": "সবুজ পথ — Shobuj Poth Travels",
+  "description": "Nature tour packages across Bangladesh, booked on WhatsApp.",
+  "capabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

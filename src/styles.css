@@ -60,19 +60,41 @@
 }
 
 @layer base {
-  * { border-color: var(--color-border); }
+  * {
+    border-color: var(--color-border);
+  }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
   }
-  h1, h2, h3 { font-family: var(--font-display); }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+  }
 }
 
-@utility shadow-soft { box-shadow: var(--shadow-soft); }
+@utility shadow-soft {
+  box-shadow: var(--shadow-soft);
+}
 @utility hero-overlay {
-  background: linear-gradient(180deg, color-mix(in oklab, var(--forest) 45%, transparent) 0%, color-mix(in oklab, var(--forest) 20%, transparent) 45%, var(--background) 100%);
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--forest) 45%, transparent) 0%,
+    color-mix(in oklab, var(--forest) 20%, transparent) 45%,
+    var(--background) 100%
+  );
 }
 
-@keyframes kenburns { from { transform: scale(1); } to { transform: scale(1.12); } }
-@utility animate-kenburns { animation: kenburns 9s ease-out forwards; }
+@keyframes kenburns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.12);
+  }
+}
+@utility animate-kenburns {
+  animation: kenburns 9s ease-out forwards;
+}

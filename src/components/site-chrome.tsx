@@ -22,13 +22,22 @@ export function Header() {
         </Link>
         <nav className="hidden items-center gap-6 md:flex">
           {nav.map((n) => (
-            <Link key={n.to} to={n.to} className="text-sm font-medium text-muted-foreground hover:text-forest" activeProps={{ className: "text-forest" }} activeOptions={{ exact: true }}>
+            <Link
+              key={n.to}
+              to={n.to}
+              className="text-sm font-medium text-muted-foreground hover:text-forest"
+              activeProps={{ className: "text-forest" }}
+              activeOptions={{ exact: true }}
+            >
               {n[lang]}
             </Link>
           ))}
         </nav>
         <div className="flex items-center gap-2">
-          <button onClick={() => setLang(lang === "bn" ? "en" : "bn")} className="rounded-full border px-3 py-1 text-xs font-semibold text-forest">
+          <button
+            onClick={() => setLang(lang === "bn" ? "en" : "bn")}
+            className="rounded-full border px-3 py-1 text-xs font-semibold text-forest"
+          >
             {lang === "bn" ? "EN" : "বাং"}
           </button>
           <button className="md:hidden" onClick={() => setOpen(!open)} aria-label="Menu">
@@ -39,7 +48,12 @@ export function Header() {
       {open && (
         <div className="mx-auto mt-2 max-w-6xl rounded-2xl bg-card p-4 shadow-soft md:hidden">
           {nav.map((n) => (
-            <Link key={n.to} to={n.to} onClick={() => setOpen(false)} className="block py-2 font-medium text-forest">
+            <Link
+              key={n.to}
+              to={n.to}
+              onClick={() => setOpen(false)}
+              className="block py-2 font-medium text-forest"
+            >
               {n[lang]}
             </Link>
           ))}
@@ -53,7 +67,11 @@ export function WhatsAppFloat() {
   const { lang } = useLang();
   return (
     <a
-      href={waLink(lang === "bn" ? "আসসালামু আলাইকুম, ট্যুর প্যাকেজ সম্পর্কে জানতে চাই।" : "Hello, I'd like to know about your tour packages.")}
+      href={waLink(
+        lang === "bn"
+          ? "আসসালামু আলাইকুম, ট্যুর প্যাকেজ সম্পর্কে জানতে চাই।"
+          : "Hello, I'd like to know about your tour packages.",
+      )}
       target="_blank"
       rel="noreferrer"
       aria-label="WhatsApp"
@@ -70,8 +88,12 @@ export function Footer() {
     <footer className="mt-24 bg-forest text-hero-foreground">
       <div className="mx-auto grid max-w-6xl gap-8 px-6 py-12 md:grid-cols-3">
         <div>
-          <div className="flex items-center gap-2 font-display text-2xl font-bold"><Leaf className="h-5 w-5" /> {t(SITE.name)}</div>
-          <p className="mt-2 text-sm opacity-80">{lang === "bn" ? "প্রকৃতির কাছে, নিশ্চিন্তে।" : "Closer to nature, worry free."}</p>
+          <div className="flex items-center gap-2 font-display text-2xl font-bold">
+            <Leaf className="h-5 w-5" /> {t(SITE.name)}
+          </div>
+          <p className="mt-2 text-sm opacity-80">
+            {lang === "bn" ? "প্রকৃতির কাছে, নিশ্চিন্তে।" : "Closer to nature, worry free."}
+          </p>
         </div>
         <div className="text-sm opacity-90">
           <p>{SITE.phoneDisplay}</p>
@@ -79,10 +101,16 @@ export function Footer() {
           <p>{t(SITE.address)}</p>
         </div>
         <div className="flex flex-col gap-1 text-sm">
-          {nav.map((n) => <Link key={n.to} to={n.to} className="opacity-90 hover:opacity-100">{n[lang]}</Link>)}
+          {nav.map((n) => (
+            <Link key={n.to} to={n.to} className="opacity-90 hover:opacity-100">
+              {n[lang]}
+            </Link>
+          ))}
         </div>
       </div>
-      <p className="pb-6 text-center text-xs opacity-60">© {new Date().getFullYear()} {t(SITE.name)}</p>
+      <p className="pb-6 text-center text-xs opacity-60">
+        © {new Date().getFullYear()} {t(SITE.name)}
+      </p>
     </footer>
   );
 }

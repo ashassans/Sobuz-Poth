@@ -1,6 +1,6 @@
 import { createFileRoute, useLocation } from "@tanstack/react-router";
 import { useState, useMemo, useEffect } from "react";
-import { Search, X, MapPin, RotateCcw } from "lucide-react";
+import { Search, X, MapPin, RotateCcw, SlidersHorizontal, ArrowUpDown } from "lucide-react";
 import { packages, regions, typeLabels, type Pkg, num } from "@/lib/site";
 import { useLang } from "@/lib/lang";
 import { PackageCard } from "@/components/package-card";
@@ -9,16 +9,16 @@ import cover from "@/assets/bandarban.jpg";
 export const Route = createFileRoute("/packages/")({
   head: () => ({
     meta: [
-      { title: "সব ট্যুর প্যাকেজ | সবুজ পথ" },
+      { title: "সব ট্যুর প্যাকেজ | সবুজ পথ — Shobuj Poth" },
       {
         name: "description",
         content:
-          "Cox's Bazar, Sajek, Sundarbans, Sylhet, Sonargaon and more — compare prices and book on WhatsApp.",
+          "কক্সবাজার, সাজেক, সুন্দরবন, সিলেট, সোনারগাঁ, টাঙ্গুয়ার হাওর — বাজেট ও সময় অনুযায়ী সেরা ভ্রমণ প্যাকেজ তুলনা করুন।",
       },
       { property: "og:title", content: "সব ট্যুর প্যাকেজ | সবুজ পথ" },
       {
         property: "og:description",
-        content: "Search and compare domestic tour packages by name or region.",
+        content: "Explore and compare domestic nature tour packages across Bangladesh.",
       },
     ],
   }),
@@ -35,6 +35,9 @@ function Packages() {
   const [type, setType] = useState<Pkg["types"][number] | "all">("all");
   const [budget, setBudget] = useState(15000);
   const [days, setDays] = useState(0);
+  const [sortBy, setSortBy] = useState<"featured" | "price-asc" | "price-desc" | "duration">(
+    "featured",
+  );
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -83,6 +86,7 @@ function Packages() {
     setType("all");
     setDays(0);
     setBudget(15000);
+    setSortBy("featured");
     if (typeof window !== "undefined") {
       window.history.replaceState(null, "", window.location.pathname);
     }
@@ -90,7 +94,7 @@ function Packages() {
 
   const list = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return packages.filter((p) => {
+    const filtered = packages.filter((p) => {
       // Name & region text search
       const matchesSearch =
         !q ||
@@ -119,37 +123,63 @@ function Packages() {
 
       return matchesSearch && matchesRegion && matchesType && matchesBudget && matchesDays;
     });
-  }, [search, selectedRegion, type, budget, days]);
+
+    if (sortBy === "price-asc") {
+      return [...filtered].sort((a, b) => a.price - b.price);
+    }
+    if (sortBy === "price-desc") {
+      return [...filtered].sort((a, b) => b.price - a.price);
+    }
+    if (sortBy === "duration") {
+      return [...filtered].sort((a, b) => b.days - a.days);
+    }
+    return filtered;
+  }, [search, selectedRegion, type, budget, days, sortBy]);
 
   return (
-    <main className="pb-20">
-      <section className="relative flex h-72 items-end overflow-hidden">
-        <img src={cover} alt="" className="absolute inset-0 h-full w-full object-cover" />
+    <main className="pb-24">
+      {/* Editorial Page Header */}
+      <section className="relative flex min-h-[38vh] items-end overflow-hidden bg-forest pt-28 pb-10">
+        <img
+          src={cover}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover opacity-45"
+        />
         <div className="hero-overlay absolute inset-0" />
-        <div className="relative mx-auto w-full max-w-6xl px-4 pb-6">
-          <p className="text-sm font-semibold uppercase tracking-wider text-primary">
-            {T("গন্তব্য তালিকা", "Destination Directory")}
-          </p>
-          <h1 className="mt-1 text-5xl font-bold text-forest">
-            {T("ট্যুর প্যাকেজ ও স্থানসমূহ", "Tour Packages & Places")}
-          </h1>
+        <div className="relative mx-auto w-full max-w-6xl px-4 sm:px-6">
+          <div className="max-w-2xl">
+            <span className="text-xs font-semibold uppercase tracking-widest text-emerald-300">
+              {T("বাংলাদেশ ট্যুর ডিরেক্টরি", "Bangladesh Tour Directory")}
+            </span>
+            <h1 className="mt-1 text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white">
+              {T("সকল ট্যুর প্যাকেজ ও গন্তব্য", "All Tour Packages & Destinations")}
+            </h1>
+            <p className="mt-2 text-sm sm:text-base text-white/80 leading-relaxed">
+              {T(
+                "পাহাড়, সমুদ্র ও ঐতিহ্যের সেরা ভ্রমণ পথ। আপনার বাজেট ও সুবিধা অনুযায়ী ফিল্টার করে পছন্দের প্যাকেজ বেছে নিন।",
+                "Explore hand-crafted itineraries with authentic local guides, clear pricing, and effortless WhatsApp booking.",
+              )}
+            </p>
+          </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4">
-        {/* Search Bar at the Top of the Destination List */}
-        <div className="-mt-8 relative z-20 space-y-3 rounded-2xl bg-card p-5 shadow-soft border border-border/50">
+      {/* Main Content Area */}
+      <section className="mx-auto max-w-6xl px-4 sm:px-6">
+        {/* Filter Control Console */}
+        <div className="-mt-8 relative z-20 space-y-4 rounded-2xl border border-border/70 bg-card p-5 shadow-card sm:p-6">
+          {/* Top Row: Search Input */}
           <div className="relative flex items-center">
-            <Search className="absolute left-4 h-5 w-5 text-muted-foreground pointer-events-none" />
+            <Search className="pointer-events-none absolute left-4 h-5 w-5 text-muted-foreground" />
             <input
               type="text"
               value={search}
               onChange={(e) => handleSearchChange(e.target.value)}
               placeholder={T(
-                "গন্তব্যের নাম বা অঞ্চল দিয়ে খুঁজুন (যেমন: সাজেক, সিলেট, বগুড়া, চট্টগ্রাম, কক্সবাজার)...",
-                "Search places by name or region (e.g. Sajek, Sylhet, Bogura, Chittagong, Cox's Bazar)...",
+                "গন্তব্যের নাম বা অঞ্চল দিয়ে খুঁজুন (যেমন: সাজেক, সিলেট, বগুড়া, কক্সবাজার, সুন্দরবন)...",
+                "Search destinations by name or region (e.g. Sajek, Sylhet, Bogura, Cox's Bazar)...",
               )}
-              className="w-full rounded-xl border border-input bg-background/80 py-3.5 pl-12 pr-10 text-base placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition"
+              className="w-full rounded-xl border border-input bg-background/80 py-3.5 pl-12 pr-10 text-sm sm:text-base text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition"
             />
             {search && (
               <button
@@ -163,17 +193,17 @@ function Packages() {
             )}
           </div>
 
-          {/* Region Quick Filters */}
+          {/* Region Tabs (Unboxed clean segmented buttons) */}
           <div className="flex flex-wrap items-center gap-1.5 pt-1">
-            <span className="flex items-center gap-1 text-xs font-semibold uppercase text-muted-foreground mr-1">
-              <MapPin className="h-3 w-3 text-primary" />
+            <span className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground mr-1">
+              <MapPin className="h-3.5 w-3.5 text-primary" />
               {T("অঞ্চল:", "Region:")}
             </span>
             <button
               onClick={() => handleRegionChange("all")}
-              className={`rounded-full px-3 py-1 text-xs font-medium transition ${
+              className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
                 selectedRegion === "all"
-                  ? "bg-primary text-primary-foreground"
+                  ? "bg-forest text-white shadow-xs font-semibold"
                   : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
               }`}
             >
@@ -185,9 +215,9 @@ function Packages() {
                 <button
                   key={r.en}
                   onClick={() => handleRegionChange(active ? "all" : r.en)}
-                  className={`rounded-full px-3 py-1 text-xs font-medium transition ${
+                  className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
                     active
-                      ? "bg-primary text-primary-foreground"
+                      ? "bg-forest text-white shadow-xs font-semibold"
                       : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
                   }`}
                 >
@@ -197,17 +227,18 @@ function Packages() {
             })}
           </div>
 
-          {/* Category, Days, Budget & Reset Filters Bar */}
-          <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-border/40">
+          {/* Secondary Controls: Type, Duration, Budget & Sorting */}
+          <div className="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-border/50 text-xs">
+            {/* Travel Type Selectors */}
             <div className="flex flex-wrap items-center gap-1.5">
               {(["all", "couple", "family", "group", "student"] as const).map((k) => (
                 <button
                   key={k}
                   onClick={() => setType(k)}
-                  className={`rounded-full px-3.5 py-1 text-xs font-medium transition ${
+                  className={`rounded-lg px-3 py-1.5 font-medium transition ${
                     type === k
-                      ? "bg-forest text-primary-foreground"
-                      : "bg-muted text-foreground hover:bg-secondary"
+                      ? "bg-primary text-primary-foreground font-semibold"
+                      : "bg-muted/70 text-foreground hover:bg-secondary"
                   }`}
                 >
                   {k === "all" ? T("সব ধরন", "All types") : typeLabels[k][lang]}
@@ -215,62 +246,90 @@ function Packages() {
               ))}
             </div>
 
-            <select
-              value={days}
-              onChange={(e) => setDays(+e.target.value)}
-              className="rounded-full border border-input bg-background px-3 py-1 text-xs"
-            >
-              <option value={0}>{T("যেকোনো সময়কাল", "Any length")}</option>
-              {[1, 2, 3].map((d) => (
-                <option key={d} value={d}>
-                  {num(d, lang)} {T("দিন", "days")}
-                </option>
-              ))}
-            </select>
+            <div className="flex flex-wrap items-center gap-3">
+              {/* Duration Select */}
+              <div className="flex items-center gap-1.5">
+                <select
+                  value={days}
+                  onChange={(e) => setDays(+e.target.value)}
+                  className="rounded-lg border border-input bg-background px-3 py-1.5 font-medium text-foreground focus:outline-none focus:border-primary"
+                >
+                  <option value={0}>{T("যেকোনো সময়কাল", "Any length")}</option>
+                  {[1, 2, 3].map((d) => (
+                    <option key={d} value={d}>
+                      {num(d, lang)} {T("দিন", "days")}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-            <label className="flex min-w-[200px] flex-1 items-center gap-2 text-xs text-muted-foreground">
-              <span>{T("বাজেট", "Budget")}</span>
-              <span className="font-semibold text-forest">৳{num(budget, lang)}</span>
-              <input
-                type="range"
-                min={2000}
-                max={15000}
-                step={500}
-                value={budget}
-                onChange={(e) => setBudget(+e.target.value)}
-                className="flex-1 accent-primary"
-              />
-            </label>
+              {/* Sort By Select */}
+              <div className="flex items-center gap-1.5">
+                <select
+                  value={sortBy}
+                  onChange={(e) =>
+                    setSortBy(
+                      e.target.value as "featured" | "price-asc" | "price-desc" | "duration",
+                    )
+                  }
+                  className="rounded-lg border border-input bg-background px-3 py-1.5 font-medium text-foreground focus:outline-none focus:border-primary"
+                >
+                  <option value="featured">{T("জনপ্রিয়তা অনুযায়ী", "Sort: Featured")}</option>
+                  <option value="price-asc">{T("কম মূল্য থেকে বেশি", "Price: Low to High")}</option>
+                  <option value="price-desc">
+                    {T("বেশি মূল্য থেকে কম", "Price: High to Low")}
+                  </option>
+                  <option value="duration">{T("সময়কাল (দীর্ঘ)", "Duration (Longest)")}</option>
+                </select>
+              </div>
 
-            {isFiltered && (
-              <button
-                onClick={resetFilters}
-                className="flex items-center gap-1 text-xs font-medium text-destructive hover:underline ml-auto"
-              >
-                <RotateCcw className="h-3 w-3" />
-                {T("রিসেট", "Reset")}
-              </button>
-            )}
+              {/* Budget Slider */}
+              <label className="flex items-center gap-2 text-muted-foreground bg-background/50 border border-input/60 rounded-lg px-3 py-1">
+                <span>{T("সর্বোচ্চ বাজেট:", "Max Budget:")}</span>
+                <span className="font-semibold text-forest tabular-nums">৳{num(budget, lang)}</span>
+                <input
+                  type="range"
+                  min={2500}
+                  max={15000}
+                  step={500}
+                  value={budget}
+                  onChange={(e) => setBudget(+e.target.value)}
+                  className="w-24 accent-primary"
+                />
+              </label>
+
+              {/* Reset Link */}
+              {isFiltered && (
+                <button
+                  onClick={resetFilters}
+                  className="flex items-center gap-1 font-semibold text-destructive hover:underline ml-auto"
+                >
+                  <RotateCcw className="h-3 w-3" />
+                  <span>{T("রিসেট", "Reset")}</span>
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
         {/* Results Counter Header */}
-        <div className="mt-6 flex items-center justify-between px-1">
+        <div className="mt-8 flex items-center justify-between px-1">
           <p className="text-sm font-medium text-muted-foreground">
-            {T("মোট", "Showing")}{" "}
-            <span className="font-bold text-forest">{num(list.length, lang)}</span>{" "}
-            {T("টি প্যাকেজ", "packages")}
-            {isFiltered && ` (${num(packages.length, lang)} ${T("টির মধ্যে", "total")})`}
+            {T("মোট", "Displaying")}{" "}
+            <span className="font-bold text-forest tabular-nums">{num(list.length, lang)}</span>{" "}
+            {T("টি ট্যুর প্যাকেজ", "packages")}
+            {isFiltered &&
+              ` (${num(packages.length, lang)} ${T("টির মধ্য থেকে", "total available")})`}
           </p>
           {search && (
             <span className="text-xs text-muted-foreground">
-              {T("খোঁজা হচ্ছে:", "Searching:")} <strong className="text-forest">"{search}"</strong>
+              {T("অনুসন্ধান:", "Filtered by:")} <strong className="text-forest">"{search}"</strong>
             </span>
           )}
         </div>
 
         {/* Destination Cards Grid */}
-        <div className="mt-4 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-5 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {list.map((p) => (
             <PackageCard key={p.slug} p={p} />
           ))}
@@ -278,25 +337,25 @@ function Packages() {
 
         {/* Empty State */}
         {!list.length && (
-          <div className="my-16 flex flex-col items-center justify-center text-center p-8 rounded-3xl bg-card border border-border/60">
-            <div className="rounded-full bg-secondary p-4 text-muted-foreground">
-              <Search className="h-8 w-8 text-primary" />
+          <div className="my-16 flex flex-col items-center justify-center text-center p-12 rounded-3xl border border-border/70 bg-card shadow-card">
+            <div className="rounded-2xl bg-secondary p-4 text-primary">
+              <Search className="h-8 w-8" />
             </div>
-            <h3 className="mt-4 text-xl font-bold text-forest">
-              {T("কোনো গন্তব্য পাওয়া যায়নি", "No destinations found")}
+            <h3 className="mt-4 font-display text-2xl font-bold text-forest">
+              {T("কোনো প্যাকেজ পাওয়া যায়নি", "No Tour Packages Found")}
             </h3>
-            <p className="mt-2 max-w-md text-sm text-muted-foreground">
+            <p className="mt-2 max-w-md text-sm text-muted-foreground leading-relaxed">
               {T(
-                `"${search || selectedRegion}" এর সাথে মেলে এমন কোনো প্যাকেজ বা স্থান পাওয়া যায়নি। বানান যাচাই করুন অথবা ফিল্টার পরিবর্তন করুন।`,
-                `No tour packages match "${search || selectedRegion}". Try checking your spelling or adjusting your filters.`,
+                `"${search || selectedRegion}" এর সাথে মেলে এমন কোনো প্যাকেজ পাওয়া যায়নি। অনুসন্ধান পরিবর্তন করুন অথবা ফিল্টার রিসেট করুন।`,
+                `No tour packages match "${search || selectedRegion}". Try relaxing your filters or search keywords.`,
               )}
             </p>
             <button
               onClick={resetFilters}
-              className="mt-5 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition"
+              className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition shadow-xs"
             >
               <RotateCcw className="h-4 w-4" />
-              {T("সব ফিল্টার রিসেট করুন", "Reset all filters")}
+              <span>{T("সকল ফিল্টার রিসেট করুন", "Reset All Filters")}</span>
             </button>
           </div>
         )}

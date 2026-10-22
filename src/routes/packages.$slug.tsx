@@ -18,6 +18,8 @@ import {
 import { packages, num, SITE, waLink } from "@/lib/site";
 import { useLang } from "@/lib/lang";
 import { BookingBox } from "@/components/package-card";
+import { TripCalculator } from "@/components/trip-calculator";
+import { HowBookingWorks } from "@/components/how-booking-works";
 
 export const Route = createFileRoute("/packages/$slug")({
   loader: ({ params }) => {
@@ -285,6 +287,11 @@ function Detail() {
                 ))}
               </ul>
             </div>
+
+            {/* Custom Trip & Transport Calculator for this destination */}
+            <div className="pt-4">
+              <TripCalculator initialPkg={p} />
+            </div>
           </div>
 
           {/* Right Column: Sticky Booking Card & Concierge */}
@@ -354,6 +361,9 @@ function Detail() {
           </aside>
         </div>
       </section>
+
+      {/* How Booking Works & WhatsApp payment clarity */}
+      <HowBookingWorks />
     </main>
   );
 }

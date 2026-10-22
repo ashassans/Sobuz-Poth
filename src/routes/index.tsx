@@ -18,10 +18,14 @@ import {
   Maximize2,
   X,
   Camera,
+  Calculator,
 } from "lucide-react";
 import { heroSlides, packages, num, waLink, SITE } from "@/lib/site";
 import { useLang } from "@/lib/lang";
 import { PackageCard } from "@/components/package-card";
+import { TripCalculator } from "@/components/trip-calculator";
+import { HowBookingWorks } from "@/components/how-booking-works";
+import { TravelerReviews } from "@/components/traveler-reviews";
 
 // Photo Gallery Images
 import sajekImg from "@/assets/sajek.jpg";
@@ -129,10 +133,11 @@ function Hero() {
           </Link>
 
           <a
-            href="#custom-trip"
+            href="#trip-calculator"
             className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-6 py-3.5 text-sm sm:text-base font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/20 hover:border-white/50 active:scale-[0.98]"
           >
-            <span>{T("নিজের ট্রিপ বানান", "Plan Custom Trip")}</span>
+            <Calculator className="h-4 w-4 text-emerald-300" />
+            <span>{T("লাইভ খরচ হিসাব", "Calculate Trip Cost")}</span>
           </a>
         </div>
 
@@ -506,6 +511,14 @@ function Index() {
         </div>
       </section>
 
+      {/* Live Interactive Pricing Calculator */}
+      <section id="trip-calculator" className="mx-auto max-w-6xl px-4 pt-24 sm:pt-28 scroll-mt-24">
+        <TripCalculator />
+      </section>
+
+      {/* 3-Step WhatsApp Booking & Transparent Advance Payment Explainer */}
+      <HowBookingWorks />
+
       {/* Why Choose Us Section */}
       <section className="mx-auto max-w-6xl px-4 pt-28">
         <div className="text-center max-w-2xl mx-auto">
@@ -712,6 +725,9 @@ function Index() {
           </div>
         </div>
       </section>
+
+      {/* Verified Traveler Reviews & Photo Stories */}
+      <TravelerReviews />
 
       {/* Pure Nature Photography Gallery Section ("ছবিতে প্রকৃতি" - Just Pictures with Place Names) */}
       <section className="mx-auto max-w-6xl px-4 pt-28">

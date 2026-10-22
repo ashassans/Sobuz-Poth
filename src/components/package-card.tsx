@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { bookingMessage, num, waLink, type Pkg } from "@/lib/site";
 import { useLang } from "@/lib/lang";
+import { BookingInquiryDialog, type BookingDetails } from "./booking-inquiry-dialog";
 
 // Realistic traveler ratings & reviews for destinations
 const packageMeta: Record<string, { rating: number; reviews: number; nights?: number }> = {
@@ -36,8 +37,22 @@ export function BookingBox({ p, compact }: { p: Pkg; compact?: boolean }) {
   const { lang } = useLang();
   const [people, setPeople] = useState(2);
   const [date, setDate] = useState("");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const total = p.price * people;
+  const advance = Math.round(total * 0.3);
+
+  const bookingDetails: BookingDetails = {
+    pkg: p,
+    adults: people,
+    children: 0,
+    date,
+    transportLabel: lang === "bn" ? "স্ট্যান্ডার্ড এসি বাস" : "Standard AC Bus",
+    roomLabel: lang === "bn" ? "স্ট্যান্ডার্ড শেয়ারিং" : "Standard Sharing",
+    unitPrice: p.price,
+    totalPrice: total,
+    advanceEstimated: advance,
+  };
 
   return (
     <div className="space-y-4 rounded-2xl border border-border/70 bg-card p-5 shadow-card">
@@ -101,21 +116,27 @@ export function BookingBox({ p, compact }: { p: Pkg; compact?: boolean }) {
         </p>
       </div>
 
-      <a
-        href={waLink(bookingMessage(p, people, date, lang))}
-        target="_blank"
-        rel="noreferrer"
+      <button
+        onClick={() => setIsDialogOpen(true)}
         className="flex w-full items-center justify-center gap-2 rounded-xl bg-whatsapp py-3 text-sm font-semibold text-whatsapp-foreground shadow-sm transition hover:opacity-95 active:scale-[0.99]"
       >
         <MessageCircle className="h-4 w-4" />
-        <span>{lang === "bn" ? "WhatsApp-এ বুকিং পাঠান" : "Send Booking on WhatsApp"}</span>
-      </a>
+        <span>
+          {lang === "bn" ? "WhatsApp-এ বুকিং ইনকোয়ারি পাঠান" : "Send Booking Inquiry to WhatsApp"}
+        </span>
+      </button>
 
       <p className="text-center text-[11px] text-muted-foreground">
         {lang === "bn"
-          ? "কোনো অগ্রিম পেমেন্ট নেই · সরাসরি WhatsApp-এ নিশ্চিতকরণ"
-          : "No upfront payment · Instant confirmation via WhatsApp"}
+          ? "সরাসরি WhatsApp-এ কনফার্মেশন · কোনো হিডেন চার্জ নেই"
+          : "Instant WhatsApp Confirmation · Zero Hidden Charges"}
       </p>
+
+      <BookingInquiryDialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        details={bookingDetails}
+      />
     </div>
   );
 }
@@ -134,7 +155,7 @@ export function PackageCard({ p }: { p: Pkg }) {
         : `${p.days} Day Tour`;
 
   return (
-    <article className="group flex flex-col overflow-hidden rounded-2xl border border-border/70 bg-card transition-all duration-300 hover:border-border hover:shadow-card">
+    <article className="group flex flex-col overflow-hidden rounded-2xl border border-border/70 bg-card transition-all duration-300 hover:border-primary/50 hover:shadow-elevated hover:-translate-y-1.5">
       {/* Visual Anchor */}
       <Link
         to="/packages/$slug"
@@ -147,13 +168,14 @@ export function PackageCard({ p }: { p: Pkg }) {
           loading="lazy"
           width={800}
           height={500}
-          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-108"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent opacity-60 transition-opacity group-hover:opacity-80" />
 
         {p.badge && (
-          <span className="absolute left-3 top-3 rounded-full bg-forest/85 px-3 py-1 text-xs font-medium text-white shadow-xs backdrop-blur-sm">
-            {t(p.badge)}
+          <span className="relative overflow-hidden absolute left-3 top-3 rounded-full bg-forest/90 px-3 py-1 text-xs font-medium text-white shadow-xs backdrop-blur-sm">
+            <span className="relative z-10">{t(p.badge)}</span>
+            <span className="absolute inset-0 pointer-events-none animate-shimmer" />
           </span>
         )}
 

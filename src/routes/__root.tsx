@@ -85,6 +85,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         name: "description",
         content: "Nature tour packages across Bangladesh, booked on WhatsApp.",
       },
+      { property: "og:title", content: "সবুজ পথ — Shobuj Poth Travels" },
+      {
+        property: "og:description",
+        content: "Nature tour packages across Bangladesh, booked on WhatsApp.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

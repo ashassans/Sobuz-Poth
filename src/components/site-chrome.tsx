@@ -230,7 +230,7 @@ export function WhatsAppFloat() {
         target="_blank"
         rel="noreferrer"
         aria-label="WhatsApp Contact"
-        className="flex h-13 w-13 items-center justify-center rounded-full bg-whatsapp text-whatsapp-foreground shadow-elevated transition-transform duration-200 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-whatsapp/40"
+        className="flex h-13 w-13 items-center justify-center rounded-full bg-whatsapp text-whatsapp-foreground shadow-elevated animate-pulse-glow transition-all duration-300 hover:scale-110 active:scale-95 focus:outline-none focus:ring-2 focus:ring-whatsapp/40"
       >
         <MessageCircle className="h-6 w-6" />
       </a>
